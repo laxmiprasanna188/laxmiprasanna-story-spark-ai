@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import StoriesViewComponent, { IStories } from "./stories.view.component";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getUserInfo, isLoggedIn } from "../../services/auth.service";
 import { getRequestLimit, getWordCount, prompts } from "./stories.utils";
 import {
@@ -17,6 +17,8 @@ type Inputs = {
 };
 
 const StoriesComponent = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { register, handleSubmit, reset, setValue } = useForm<Inputs>();
   const [stories, setStories] = useState<IStories[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,6 +33,16 @@ const StoriesComponent = () => {
     parseInt(localStorage.getItem("guestRequestCount") || "0", 10)
   );
   const [showLimitModal, setShowLimitModal] = useState<boolean>(false);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  useEffect(() => {
+    if (location.state && location.state.prompt) {
+      setTextareaValue(location.state.prompt);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   useEffect(() => {
     setValue("prompt", textareaValue);

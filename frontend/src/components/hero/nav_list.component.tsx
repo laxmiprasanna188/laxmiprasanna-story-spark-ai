@@ -28,14 +28,15 @@ const NavListComponent: React.FC<INavListComponentProps> = ({
     <div className="relative z-10 mx-auto max-w-8xl px-5 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-8">
-          <a href="/">
+          <Link to="/">
             <img src={logo} alt="logo" width={50} height={50} />
-          </a>
+          </Link>
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-gray-400 hover:text-custom transition">HOME</a>
-            <a href="/explore" className="text-gray-400 hover:text-custom transition">EXPLORE</a>
+            <Link to="/" className="text-gray-400 hover:text-custom transition">HOME</Link>
+            <Link to="/explore" className="text-gray-400 hover:text-custom transition">EXPLORE</Link>
+            <Link to="/community" className="text-gray-400 hover:text-custom transition">COMMUNITY</Link>
             {isLogin && (
-              <a href="/dashboard" className="text-gray-400 hover:text-custom transition">DASHBOARD</a>
+              <Link to="/dashboard" className="text-gray-400 hover:text-custom transition">DASHBOARD</Link>
             )}
           </div>
         </div>
@@ -76,14 +77,15 @@ const NavListComponent: React.FC<INavListComponentProps> = ({
 
       {menuOpen && (
         <div className="md:hidden px-5 pb-4 flex flex-col gap-3 border-t border-white/10 mt-2">
-          <a href="/" className="text-gray-400 hover:text-white py-2">HOME</a>
-          <a href="/explore" className="text-gray-400 hover:text-white py-2">EXPLORE</a>
+          <Link to="/" className="text-gray-400 hover:text-white py-2">HOME</Link>
+          <Link to="/explore" className="text-gray-400 hover:text-white py-2">EXPLORE</Link>
+          <Link to="/community" className="text-gray-400 hover:text-white py-2">COMMUNITY</Link>
           {isLogin && (
-            <a href="/dashboard" className="text-gray-400 hover:text-white py-2">DASHBOARD</a>
+            <Link to="/dashboard" className="text-gray-400 hover:text-white py-2">DASHBOARD</Link>
           )}
           <button type="button" className="text-left text-gray-400 py-2"
             onClick={() => setShowNotification(true)}>
-              NOTIFICATIONS {newNotify > 0 && `(${newNotify})`}
+            NOTIFICATIONS {newNotify > 0 && `(${newNotify})`}
           </button>
           {isLogin ? (
             <button onClick={handelLogout} className="text-left text-gray-400 py-2">

@@ -1,3 +1,4 @@
+import WritingAssistantComponent from "./components/writing-assistant/writing_assistant.component";
 import { JSX } from "react";
 import {
   BrowserRouter as Router,
@@ -26,6 +27,8 @@ import EmailValidationComponent from "./components/email_validation/email.valida
 import { USER_ROLE } from "./constants/role";
 import PostListsComponent from "./components/dashboard/posts/post_lists.component";
 import ProfileComponent from "./components/dashboard/profile/profile.component";
+import TemplatesComponent from "./components/templates/templates.component";
+import CommunityComponent from "./components/community/community.component";
 
 const ProtectedRoute = ({
   element,
@@ -57,7 +60,30 @@ function App() {
             </RootLayout>
           }
         />
-
+        <Route
+          path="/templates"
+          element={
+            <RootLayout>
+              <TemplatesComponent />
+            </RootLayout>
+          }
+        />
+<Route
+  path="/templates"
+  element={
+    <RootLayout>
+      <TemplatesComponent />
+    </RootLayout>
+  }
+/>
+<Route
+  path="/writing-assistant"
+  element={
+    <RootLayout>
+      <WritingAssistantComponent />
+    </RootLayout>
+  }
+/>
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardComponent />} />
           <Route
@@ -152,6 +178,14 @@ function App() {
         <Route path="/signup" element={<SignUpComponent />} />
         <Route path="/pricing" element={<PricingComponent />} />
         <Route path="/explore" element={<ExploreComponent />} />
+        <Route
+          path="/community"
+          element={
+            <RootLayout>
+              <CommunityComponent />
+            </RootLayout>
+          }
+        />
         <Route path="/post/:id" element={<PostDetailsComponent />} />
         <Route path="*" element={<NotFoundComponent />} />
       </Routes>
