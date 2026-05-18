@@ -32,6 +32,7 @@ const StoriesViewComponent: React.FC<StoriesComponentProps> = ({
   const [topics, setTopics] = useState<ITopicData[]>(topicsData);
   const [selectTopics, setSelectTopics] = useState<ITopicData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isCopied, setIsCopied] = useState<boolean>(false);
   const [createPost] = useCreatePostMutation();
 
   useEffect(() => {
@@ -53,7 +54,14 @@ const StoriesViewComponent: React.FC<StoriesComponentProps> = ({
     updatedTopics[index].selected = !updatedTopics[index].selected;
     setTopics(updatedTopics);
   };
-
+const handleCopyStory = async () => {
+  if (selectedStory?.content) {
+    await navigator.clipboard.writeText(selectedStory.content);
+    setIsCopied(true);
+    toast.success("Story copied!");
+    setTimeout(() => setIsCopied(false), 2000);
+       }
+    };
   const handelPublishStory = async () => {
     if (!isLogin) {
       toast.error("Please login to publish the story.");
@@ -127,6 +135,14 @@ const StoriesViewComponent: React.FC<StoriesComponentProps> = ({
                 Generated Story
               </h3>
               <span className="text-sm text-gray-800">
+              {selectedStory && (
+              <button
+   				 className="rounded-lg px-4 py-1 mr-2 bg-gray-700 text-gray-200 font-semibold"
+   				 onClick={handleCopyStory}
+ 				 >
+   				 {isCopied ? "✓ Copied" : "📋 Copy"}
+ 			 </button>
+			 )}
                 <button
                   className={`rounded-lg px-4 py-1 font-semibold flex items-center space-x-2 cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 text-gray-300 ${
                     loading
@@ -203,7 +219,7 @@ const StoriesViewComponent: React.FC<StoriesComponentProps> = ({
                   <h6 className="mb-1 text-gray-300 text-xl font-semibold">
                     {selectedStory.title}
                   </h6>
-                  <p className="text-gray-400 font-light break-words text-sm sm:text-base">
+                  <p className="text-gray-400 font-light breakwords text-sm sm:text-base">
                     {getShortenedText(selectedStory.content)}
                   </p>
                 </div>
