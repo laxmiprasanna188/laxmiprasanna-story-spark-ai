@@ -13,6 +13,7 @@ const app: Application = express();
 
 const defaultCorsOrigins = [
   "http://localhost:4001",
+  "http://localhost:4002",
   "https://storysparkai.vercel.app",
 ];
 const corsOrigins =
