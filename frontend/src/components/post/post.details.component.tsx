@@ -24,7 +24,7 @@ const PostDetailsComponent = () => {
   const { id } = useParams();
   const { data: post, isLoading } = useGetPostByIdQuery(id || "");
   const tag = post?.tag;
-  const { data: relatedPost } = useGetPostByTagQuery(tag || "");
+    const { data: relatedPost } = useGetPostByTagQuery({ tag: tag || "", excludeId: post?._id || "" });
   const [toggleReaction] = useToggleReactionMutation();
   const currentUser = getUserInfo();
   const authorId = post?.author?._id;
@@ -218,7 +218,7 @@ const PostDetailsComponent = () => {
               <h3 className="text-xl font-semibold mb-4 text-gray-300">
                 Related Stories
               </h3>
-              <RelatedStoriesComponent posts={relatedPost || []} />
+              <RelatedStoriesComponent posts={relatedPost || []} currentPostId={post?._id || ""} />
             </div>
           </div>
         </div>

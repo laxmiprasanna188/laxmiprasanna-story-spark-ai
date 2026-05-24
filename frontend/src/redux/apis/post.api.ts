@@ -129,9 +129,11 @@ const postApi = baseApi.injectEndpoints({
     }),
 
     getPostByTag: build.query({
-      query: (tag: string) => ({
-        url: `/${POST_URL}/tag/${tag}`,
+      // Accepts an object with tag and excludeId
+      query: (arg: { tag: string; excludeId?: string }) => ({
+        url: `/${POST_URL}/tag/${arg.tag}`,
         method: "GET",
+        params: arg.excludeId ? { excludeId: arg.excludeId } : {},
       }),
 
       transformResponse: (response: {
