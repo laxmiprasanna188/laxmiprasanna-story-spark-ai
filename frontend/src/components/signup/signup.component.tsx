@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import SSInput from "../ui-component/ss-input/ss-input";
 import SSButton from "../ui-component/ss-button/ss-button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { storeUserInfo } from "../../services/auth.service";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -91,12 +91,22 @@ const SignUpComponent = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<Inputs>({ mode: "onChange" });
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const [showOtpField, setShowOtpField] = useState<boolean>(false);
   const [registerInfo, setRegisterInfo] = useState<IRegisterInfo>();
   const [expiredAt, setExpiredAt] = useState(0);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
 
   const password = watch("password");
   const confirmPassword = watch("confirmPassword");
@@ -145,6 +155,7 @@ const SignUpComponent = () => {
           toast.success("OTP sent to your email");
           setRegisterInfo(user);
           setShowOtpField(true);
+          setCooldown(60);
         }
       } catch (error) {
         const message =
@@ -152,7 +163,6 @@ const SignUpComponent = () => {
             ?.message ||
           "Failed to send OTP. Check backend .env email credentials.";
         toast.error(message);
-        console.log("error: ", error);
       } finally {
         setIsBusy(false);
       }
@@ -199,7 +209,36 @@ const SignUpComponent = () => {
         (err as { data?: Array<{ message?: string }> })?.data?.[0]?.message ||
         "OTP verification failed. Please check the code and try again.";
       toast.error(message);
-      console.log("error: ", err);
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (cooldown > 0 || isBusy) return;
+    if (!registerInfo) {
+      toast.error("Something went wrong. Please restart the process.");
+      return;
+    }
+    setIsBusy(true);
+    try {
+      const otpPayload = {
+        name: registerInfo.name,
+        email: registerInfo.email,
+      };
+      const res = await emailVerify({ ...otpPayload }).unwrap();
+      if (res?.data) {
+        const { expiresAt } = res.data;
+        setExpiredAt(new Date(expiresAt).getTime());
+        toast.success("OTP resent successfully!");
+        setValue("otp", "");
+        setCooldown(60);
+      }
+    } catch (error) {
+      const message =
+        (error as { data?: Array<{ message?: string }> })?.data?.[0]
+          ?.message || "Failed to resend OTP. Please try again.";
+      toast.error(message);
     } finally {
       setIsBusy(false);
     }
@@ -249,8 +288,9 @@ const SignUpComponent = () => {
                 name="name"
                 placeholder="Enter your name"
                 required={true}
-                icon="fas fa-user"
+                icon="fi fi-rr-user"
                 register={register}
+                autoComplete="name"
                 validation={{
                   required: "Name is required",
                 minLength: {
@@ -272,8 +312,9 @@ const SignUpComponent = () => {
                 type="email"
                 placeholder="Enter your email"
                 required={true}
-                icon="fas fa-envelope"
+                icon="fi fi-rr-envelope"
                 register={register}
+                autoComplete="email"
                 error={errors.email}
               />
 
@@ -283,11 +324,13 @@ const SignUpComponent = () => {
                 type="password"
                 placeholder="Enter your password"
                 required={true}
-                icon="fas fa-lock"
+                icon="fi fi-rr-lock"
                 register={register}
+                autoComplete="new-password"
                 error={errors.password}
               />
 
+              {password?.length > 0 && (
               <div className="space-y-3 -mt-2">
                 <div
                   className="w-full h-2 bg-slate-700 rounded-full overflow-hidden"
@@ -325,6 +368,7 @@ const SignUpComponent = () => {
                   })}
                 </ul>
               </div>
+)}
 
               <SSInput
                 label="Confirm Password"
@@ -332,8 +376,9 @@ const SignUpComponent = () => {
                 type="password"
                 placeholder="Confirm your password"
                 required={true}
-                icon="fas fa-eye"
+                icon="fi fi-rr-eye"
                 register={register}
+                autoComplete="new-password"
                 error={errors.confirmPassword}
               />
 
@@ -346,8 +391,24 @@ const SignUpComponent = () => {
                 name="otp"
                 placeholder="Enter your OTP"
                 required={true}
-                icon="fas fa-key"
+                icon="fi fi-rr-key"
                 register={register}
+                validation={{
+                  required: "Please enter OTP",
+                  minLength: {
+                    value: 6,
+                    message: "OTP must be 6 digits",
+                  },
+                  maxLength: {
+                    value: 6,
+                    message: "OTP must be 6 digits",
+                  },
+                  pattern: {
+                    value: /^[0-9]{6}$/,
+                    message: "OTP must contain only numbers",
+                  },
+                }}
+                error={errors.otp}
               />
 
               <SSButton
@@ -356,6 +417,17 @@ const SignUpComponent = () => {
                 onClick={handleOtpValidation}
                 isLoading={isBusy}
               />
+
+              <div className="text-center mt-2">
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={cooldown > 0 || isBusy}
+                  className="text-sm font-semibold text-indigo-400 hover:text-indigo-300 disabled:text-gray-500 transition-colors duration-200 focus:outline-none disabled:cursor-not-allowed"
+                >
+                  {cooldown > 0 ? `Resend OTP (${cooldown}s)` : "Resend OTP"}
+                </button>
+              </div>
             </div>
           )}
 

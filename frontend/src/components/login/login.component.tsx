@@ -21,7 +21,11 @@ const LoginComponent = () => {
   const [loginUser] = useLoginUserMutation();
   const [googleLogin] = useGoogleLoginMutation();
 
-  const { register, handleSubmit } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({ mode: "onChange" });
 
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -41,9 +45,7 @@ const LoginComponent = () => {
 
         setIsLoggedIn(true);
       }
-    } catch (err: unknown) {
-      console.log("error: ", err);
-
+    } catch {
       toast.error(
         "Login failed. Please check your credentials."
       );
@@ -73,9 +75,7 @@ const LoginComponent = () => {
 
         setIsLoggedIn(true);
       }
-    } catch (err: unknown) {
-      console.log("Google login error: ", err);
-
+    } catch {
       toast.error(
         "Failed to login with Google. Please try again."
       );
@@ -85,8 +85,6 @@ const LoginComponent = () => {
   };
 
   const handleGoogleLoginError = () => {
-    console.log("Login Failed");
-
     toast.error(
       "Google login failed. Please try again."
     );
@@ -129,6 +127,13 @@ const LoginComponent = () => {
 
         <div className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 sm:p-10 shadow-2xl">
 
+            <button
+            onClick={() => window.location.href = "/"}
+            className="mb-4 text-sm text-blue-400 hover:text-blue-300 transition-colors duration-200 flex items-center gap-2"
+                      >
+            ← Back to Home
+            </button>
+
           <h3 className="mb-6 text-center text-2xl font-bold tracking-tight text-slate-200">
             Welcome Back
           </h3>
@@ -144,8 +149,10 @@ const LoginComponent = () => {
               type="email"
               placeholder="Enter your email"
               required={true}
-              icon="fas fa-envelope"
+              icon="fi fi-rr-envelope"
               register={register}
+              validation={{ required: "Email is required" }}
+              error={errors.email}
             />
 
             <SSInput
@@ -154,9 +161,20 @@ const LoginComponent = () => {
               type="password"
               placeholder="Enter your password"
               required={true}
-              icon="fas fa-lock"
+              icon="fi fi-rr-lock"
               register={register}
+              validation={{ required: "Password is required" }}
+              error={errors.password}
             />
+
+            <div className="flex justify-end -mt-2">
+              <a
+                href="/forgot-password"
+                className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-200"
+              >
+                Forgot Password?
+              </a>
+            </div>
 
             <SSButton
               text="Sign In"
