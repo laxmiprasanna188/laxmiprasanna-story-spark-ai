@@ -98,7 +98,9 @@ const LoginComponent = () => {
   }
 
   return (
+
     <div className="min-h-screen bg-white dark:bg-[#0B1120] text-slate-900 dark:text-slate-100 flex items-center justify-center relative overflow-hidden px-4 box-border">
+
       {/* Background Glow */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none" />
@@ -110,6 +112,7 @@ const LoginComponent = () => {
           </h2>
         </div>
 
+
         {/* Added w-full and box-border to strictly contain children */}
         <div className="w-full box-border bg-slate-50 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 rounded-2xl p-8 sm:p-10 shadow-2xl">
           <button
@@ -118,6 +121,7 @@ const LoginComponent = () => {
           >
             ← Back to Home
           </button>
+
 
           <h3 className="mb-6 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-200">
             Welcome Back
