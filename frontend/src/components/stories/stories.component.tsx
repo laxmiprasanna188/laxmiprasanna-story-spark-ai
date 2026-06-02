@@ -500,7 +500,9 @@ const StoriesComponent = () => {
   );
   const [selectedLength, setSelectedLength] = useState<string>(draft?.length || "medium");
   const [selectedTone, setSelectedTone] = useState<ToneLabel | "">(draft?.tone || "Dramatic");
-  const [textareaValue, setTextareaValue] = useState<string>(location.state?.prompt || draft?.prompt || "");
+  const [textareaValue, setTextareaValue] = useState<string>(() => {
+    return location.state?.prompt || draft?.prompt || "";
+  });
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(draft?.language || "English");
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState<boolean>(false);
@@ -549,15 +551,12 @@ const StoriesComponent = () => {
   // Autosave Draft
   useEffect(() => {
     const timer = setTimeout(() => {
-      // stories intentionally excluded â€” API response, not user input
-      // including stories risks hitting localStorage quota (~5MB) silently
       const draftData = {
         prompt: textareaValue,
         genre: selectedGenre,
         length: selectedLength,
         language: selectedLanguage,
         tone: selectedTone,
-        stories: stories,
       };
       try {
         localStorage.setItem("story_spark_draft", JSON.stringify(draftData));
@@ -568,7 +567,7 @@ const StoriesComponent = () => {
       }
     }, 1000);
     return () => clearTimeout(timer);
-  }, [textareaValue, selectedGenre, selectedLength, selectedLanguage, selectedTone, stories]);
+  }, [textareaValue, selectedGenre, selectedLength, selectedLanguage, selectedTone]);
 
   useEffect(() => {
     const selectedLocale =
@@ -697,6 +696,8 @@ const StoriesComponent = () => {
         setTextareaValue("");
         setSelectedPrompt("");
         setValue("prompt", "");
+        // Clear draft after successful generation
+        localStorage.removeItem("story_spark_draft");
         if (selectedGenre) {
           playSoundtrack(selectedGenre);
         }
