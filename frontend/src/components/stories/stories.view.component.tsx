@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import DOMPurify from "dompurify";
 import { getShortenedText, ITopicData, topicsData, getWordCount, SELECTED_TOPIC_CLASSES } from "./stories.utils";
 import { formatReadingStats } from "../../utils/story-utils";
 import toast, { Toaster } from "react-hot-toast";
@@ -1781,12 +1782,12 @@ if (isLoading) {
                             : undefined
                         }
                       >
-                        {segment.text}
+                        {DOMPurify.sanitize(segment.text)}
                       </span>
                     );
                   })
                 ) : (
-                  selectedStory.content
+                  DOMPurify.sanitize(selectedStory.content)
                 )}
               </p>
             </div>
@@ -2299,6 +2300,8 @@ if (isLoading) {
           </div>
           <div className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden group">
             <div className="relative flex flex-col rounded-lg">
+              console.log("selectedStory", selectedStory);
+              console.log("imageURL", selectedStory?.imageURL);
               <div className="relative m-3 overflow-hidden text-white rounded-xl">
                 <ImageFallback
                   src={selectedStory.imageURL}
