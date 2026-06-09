@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Razorpay from "razorpay";
+import getRazorpay from "../config/razorpay";
 import crypto from "crypto";
 import { Order } from "../app/modules/payment/order.model";
 import { User } from "../app/modules/user/user.model";
@@ -12,11 +12,6 @@ const PLAN_PRICE_MAP: Record<string, { amount: number; currency: string }> = {
   pro: { amount: 99900, currency: "INR" },
   premium: { amount: 199900, currency: "INR" },
 };
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
 
 // POST /api/v1/payment/create-order
 export const createOrder = async (req: Request, res: Response) => {
@@ -38,6 +33,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
     const { amount, currency } = PLAN_PRICE_MAP[plan];
 
+    const razorpay = getRazorpay();
     // Create the Razorpay order
     const razorpayOrder = await razorpay.orders.create({
       amount,
