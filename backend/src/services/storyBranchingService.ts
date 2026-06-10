@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import config from "../config";
 import ApiError from "../errors/api_error";
 import httpStatus from "http-status";
+import { compressContext, serializeLore } from "../utils/contextCompressor";
 
 export interface IBranchingStoryRequest {
   storyContext: string;
@@ -56,8 +57,21 @@ const buildPrompt = ({
   genre,
 }: IBranchingStoryRequest): string => {
   const genreLine = genre?.trim() ? `Genre: ${genre.trim()}.` : "Genre: flexible.";
-  const contextBlock = storyContext.trim()
-    ? storyContext.trim()
+
+  // Split raw context into nodes by the [Player chose:] delimiter, compress
+  const rawNodes = storyContext.trim()
+    ? storyContext.split(/(?=\[Player chose:)/g).map((chunk, i) => ({
+        id: `seg-${i}`,
+        text: chunk.trim(),
+      }))
+    : [];
+  const { lore, window: contextWindow } = compressContext(rawNodes);
+  const compressedContext = rawNodes.length
+    ? `${serializeLore(lore)}\n\n${contextWindow.map((n) => n.text).join("\n")}`
+    : "";
+
+  const contextBlock = compressedContext.trim()
+    ? compressedContext.trim()
     : "No prior story context. This is the opening turn.";
   const userAction = selectedChoice.trim()
     ? `Player action: ${selectedChoice.trim()}`
