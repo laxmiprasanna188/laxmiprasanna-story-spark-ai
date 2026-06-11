@@ -77,7 +77,7 @@ const SSInput = <T extends FieldValues>({
           autoFocus={autoFocus}
           {...register(name, validation)}
 
-          className={`auth-field w-full max-w-full h-11 block rounded-xl border bg-transparent text-sm transition-all duration-200 focus:outline-none focus:ring-2 ${
+          className={`w-full max-w-full h-11 block rounded-xl border bg-transparent text-sm transition-all duration-200 focus:outline-none focus:ring-2 ${
             icon ? "pl-10" : "px-4"
           } ${type === "password" ? "pr-10" : "pr-4"} ${
             error
