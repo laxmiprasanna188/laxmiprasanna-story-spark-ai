@@ -462,6 +462,8 @@ interface ICharacter {
   personality: string;
 }
 
+const DRAFT_KEY = "story_spark_draft";
+
 const StoriesComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const storiesPerPage = 10;
@@ -471,7 +473,7 @@ const StoriesComponent = () => {
 
   const draft = useMemo(() => {
     try {
-      const saved = localStorage.getItem("story_spark_draft");
+      const saved = localStorage.getItem(DRAFT_KEY);
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
@@ -562,8 +564,7 @@ useEffect(() => {
   const [selectedGenre, setSelectedGenre] = useState<string>("");
   const [selectedLength, setSelectedLength] = useState<string>("medium");
   const [textareaValue, setTextareaValue] = useState<string>("");
-  const DRAFT_KEY = "storyspark_story_draft_v1";
-  const [draftStatus, setDraftStatus] = useState("");
+
   
   const [selectedGenre, setSelectedGenre] = useState<string>(
     draft?.genre
@@ -667,7 +668,7 @@ useEffect(() => {
         tone: selectedTone,
       };
       try {
-        localStorage.setItem("story_spark_draft", JSON.stringify(draftData));
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
       } catch (err) {
         if (err instanceof DOMException && err.name === "QuotaExceededError") {
           toast.error("Couldn't autosave draft â€” storage limit reached.");
@@ -855,10 +856,6 @@ useEffect(() => {
         setSelectedPrompt("");
         setValue("prompt", "");
         // Clear draft after successful generation
-        localStorage.removeItem("story_spark_draft");
-        if (selectedGenre) {
-          playSoundtrack(selectedGenre);
-        }
         localStorage.removeItem(DRAFT_KEY);
         setDraftStatus("");
         reset();
