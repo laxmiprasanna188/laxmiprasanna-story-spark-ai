@@ -298,18 +298,18 @@ const HeroSectionComponent = () => {
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wider uppercase">StorySparkAI v2.0 is live</span>
           </div>
 
-          <motion.h1 variants={itemVariants} className="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 sm:mb-8 leading-tight select-none tracking-tight">
-            Ignite Your Imagination With <br className="hidden sm:block" />
-            <span className="hero-gradient-text pb-2">
-              <Typewriter
-                phrases={[
-                  "AI-Driven Storytelling",
-                  "Creative Story Generation",
-                  "Smart Writing Assistant",
-                ]}
-              />
-            </span>
-          </h1>
+         <motion.h1 variants={itemVariants} className="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 sm:mb-8 leading-tight select-none tracking-tight">
+  Ignite Your Imagination With <br className="hidden sm:block" />
+  <span className="hero-gradient-text pb-2">
+    <Typewriter
+      phrases={[
+        "AI-Driven Storytelling",
+        "Creative Story Generation",
+        "Smart Writing Assistant",
+      ]}
+    />
+  </span>
+</motion.h1>
 
           <p className="max-w-2xl mx-auto text-sm sm:text-lg lg:text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-8 sm:mb-10 font-medium">
             Create, edit, and generate engaging multiple story variations from a single prompt.
@@ -334,7 +334,7 @@ const HeroSectionComponent = () => {
               </div>
             </div>
           </div>
-        </div>
+        
           </motion.div>
 
         <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden select-none">
@@ -347,20 +347,22 @@ const HeroSectionComponent = () => {
               />
             ))}
           </div>
-          </div>
-
-            <motion.div
-        variants={itemVariants}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28 w-full box-border"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 w-full box-border">
-          {features.map((feature, index) => (
-            <FeatureCard feature={feature} key={index} />
-          ))}
         </div>
-      </motion.div>
-    </motion.div>
-  );
+<motion.div
+  variants={itemVariants}
+  className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28 w-full box-border"
+>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 w-full box-border">
+    {features.map((feature, index) => (
+      <FeatureCard feature={feature} key={index} />
+    ))}
+  </div>
+</motion.div>
+
+</div>
+
+</motion.div>
+);
 };
 
 export default HeroSectionComponent;
