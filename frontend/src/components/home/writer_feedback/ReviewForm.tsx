@@ -13,13 +13,12 @@ const StarRating = ({
   const [hovered, setHovered] = useState(0);
 
   return (
-    <div className="space-y-2">
-      <div className="flex gap-2">
+    <div className="w-full space-y-2">
+      <div className="flex flex-wrap gap-2">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             type="button"
-            aria-pressed={rating === star}
             aria-label={`Rate ${star} star`}
             onClick={() => setRating(star)}
             onMouseEnter={() => setHovered(star)}
@@ -81,7 +80,7 @@ const ReviewForm = () => {
         feedback,
         rating,
         imgSrc: "",
-      });
+      }).unwrap();
 
       setSuccess(true);
       setName("");
@@ -97,42 +96,34 @@ const ReviewForm = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0f172a]/90 to-[#111827]/90 p-6 sm:p-8 md:p-10 shadow-2xl shadow-blue-500/10 backdrop-blur-md">
-        {/* Background Glow */}
+    <div className="mx-auto w-full max-w-2xl px-4 sm:px-0">
+      <div className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#0f172a]/90 to-[#111827]/90 p-6 shadow-2xl shadow-blue-500/10 backdrop-blur-md sm:p-8 md:p-10">
         <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-blue-500/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-indigo-500/10 blur-3xl" />
 
-        <div className="relative z-10">
-          {/* Header */}
-          <div className="mb-8">
+        <div className="relative z-10 min-w-0">
+          <div className="mb-8 min-w-0">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-400">
               ✍️ Share Your Story
             </div>
 
-            <h3 className="text-2xl font-bold text-white">
-              Share Your Experience
-            </h3>
+            <h3 className="text-2xl font-bold text-white">Share Your Experience</h3>
 
             <p className="mt-1 text-sm text-gray-400">
               Your feedback helps us improve StorySparkAI for everyone.
             </p>
           </div>
 
-          {/* Success */}
           {success && (
             <div
               aria-live="polite"
               className="mb-6 flex items-center gap-3 rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-400 transition-all duration-300"
             >
               <span className="text-lg">🎉</span>
-              <span>
-                Thank you! Your review has been submitted for approval.
-              </span>
+              <span>Thank you! Your review has been submitted for approval.</span>
             </div>
           )}
 
-          {/* Error */}
           {errors.submit && (
             <div
               aria-live="polite"
@@ -143,9 +134,8 @@ const ReviewForm = () => {
             </div>
           )}
 
-          <div className="space-y-6">
-            {/* Name */}
-            <div>
+          <div className="space-y-6 min-w-0">
+            <div className="min-w-0">
               <label
                 htmlFor="name"
                 className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-300"
@@ -161,8 +151,7 @@ const ReviewForm = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your full name"
-                aria-invalid={!!errors.name}
-                className="w-full max-w-lg rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-all duration-200 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                className="w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-all duration-200 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
 
               {errors.name && (
@@ -173,8 +162,7 @@ const ReviewForm = () => {
               )}
             </div>
 
-            {/* Role */}
-            <div>
+            <div className="min-w-0">
               <label
                 htmlFor="role"
                 className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-300"
@@ -190,8 +178,7 @@ const ReviewForm = () => {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 placeholder="e.g. Fantasy Writer, Student, Blogger"
-                aria-invalid={!!errors.role}
-                className="w-full max-w-lg rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-all duration-200 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                className="w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-all duration-200 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
 
               {errors.role && (
@@ -202,8 +189,7 @@ const ReviewForm = () => {
               )}
             </div>
 
-            {/* Feedback */}
-            <div>
+            <div className="min-w-0">
               <label
                 htmlFor="feedback"
                 className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-300"
@@ -220,15 +206,14 @@ const ReviewForm = () => {
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Tell us about your experience with StorySparkAI..."
-                aria-invalid={!!errors.feedback}
-                className="w-full max-w-lg resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-all duration-200 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                className="w-full min-w-0 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-all duration-200 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
 
-              <div className="mt-1 flex items-center justify-between max-w-lg">
+              <div className="mt-1 flex w-full min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 {errors.feedback ? (
-                  <p className="flex items-center gap-1 text-xs text-red-400">
+                  <p className="flex min-w-0 items-center gap-1 text-xs text-red-400">
                     <span>⚠</span>
-                    {errors.feedback}
+                    <span className="break-words">{errors.feedback}</span>
                   </p>
                 ) : (
                   <span />
@@ -244,8 +229,7 @@ const ReviewForm = () => {
               </div>
             </div>
 
-            {/* Rating */}
-            <div>
+            <div className="min-w-0">
               <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-300">
                 <span className="text-blue-400">⭐</span>
                 Rating
@@ -266,46 +250,44 @@ const ReviewForm = () => {
               )}
             </div>
 
-            <div className="flex justify-center mt-6">
+            <div className="mt-6 flex w-full justify-center">
               <button
                 type="button"
                 onClick={handleSubmit}
                 disabled={isLoading}
-                className="w-auto rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3 font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:from-blue-500 hover:to-indigo-500 hover:shadow-xl hover:shadow-blue-500/25 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full max-w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3 font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:from-blue-500 hover:to-indigo-500 hover:shadow-xl hover:shadow-blue-500/25 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 sm:w-auto"
               >
-              {isLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg
-                    className="h-4 w-4 animate-spin"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8z"
-                    />
-                  </svg>
-                  Submitting...
-                </span>
-              ) : (
-                "Share Review ✨"
-              )}
-            </button>
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      className="h-4 w-4 animate-spin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      />
+                    </svg>
+                    Submitting...
+                  </span>
+                ) : (
+                  "Share Review ✨"
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-  );
     </div>
   );
 };
