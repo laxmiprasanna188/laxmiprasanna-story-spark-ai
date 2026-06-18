@@ -1,75 +1,19 @@
-import type { ReactElement } from "react";
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router-dom";
+import React, { lazy, Suspense } from "react";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
-import MagicCursorComponent from "./components/magic-cursor/magic_cursor.component";
-import NotFoundComponent from "./components/not-found.component";
-import StoryInspirationWrapper from "./components/StoryInspirationWrapper";
-import WritingAssistantComponent from "./components/writing-assistant/writing_assistant.component";
-
-import BranchingStory from "./components/stories/BranchingStory";
-
-import CollabHome from "./components/collab/CollabHome";
-import CollabRoom from "./components/collab/CollabRoom";
 import { USER_ROLE } from "./constants/role";
 
 import RootLayout from "./components/layout/root_layout.component";
 import DashboardLayout from "./components/dashboard/dashboard_layout.component";
-
-import AboutUsComponent from "./components/footer/about-us";
-import AnalyticsPage from "./components/dashboard/analytics/analytics.page";
-import BlogComponent from "./components/footer/blog";
-import BookmarksComponent from "./components/post/bookmarks.component";
-import CareerComponent from "./components/footer/career";
-import CommunityComponent from "./components/community/community.component";
-import Contact from "./components/contactus/contactus";
-import ContributorsComponent from "./components/footer/contributors";
-import CookiePolicy from "./components/footer/cookie-policy";
-import DashboardComponent from "./components/dashboard/dashboard.component";
-import EmailValidationComponent from "./components/email_validation/email.validation.component";
-import ExploreComponent from "./components/post/post.component";
-import ForgotPasswordComponent from "./components/forgot-password/forgot-password.component";
-import PaymentComponent from "./components/home/pricing/payment.component";
-
-import GuidelinesComponent from "./components/footer/guidelines";
-import HelpCenterComponent from "./components/help_center/help_center.component";
+import LoadingAnimation from "./components/loading/loading.component";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ScrollToTopButton from "./components/ScrollToTopButton";
+import ScrollToTop from "./components/ScrollToTop";
+import MagicCursorComponent from "./components/magic-cursor/magic_cursor.component";
+import ThemeSwitcher from "./components/theme-switcher/ThemeSwitcher";
 import HeroSectionComponent from "./components/hero/hero_section.component";
 import HomeComponent from "./components/home/home.component";
-import LoginComponent from "./components/login/login.component";
-
-import PostDetailsComponent from "./components/post/post.details.component";
-import PostListsComponent from "./components/dashboard/posts/post_lists.component";
-import PricingComponent from "./components/pricing/pricing.component";
-import PrivacyPolicy from "./components/footer/Privacy";
-import ProfileComponent from "./components/dashboard/profile/profile.component";
-import PublishedStoriesComponent from "./components/dashboard/posts/published_stories.component";
-import ReportBug from "./components/report-bug/ReportBug";
-import ResourceDetailComponent from "./components/community/resource_detail.component";
-import ResourcesListComponent from "./components/community/resources_list.component";
-import ScrollToTop from "./components/ScrollToTop";
-import SettingComponent from "./components/dashboard/settings/settings.component";
-import SignUpComponent from "./components/signup/signup.component";
-import SimpleProtectedRoute from "./components/ProtectedRoute";
-import StoriesComponent from "./components/stories/stories.component";
-import StoryWorkspace from "./components/story/StoryWorkspace";
-import TemplatesComponent from "./components/templates/templates.component";
-import Terms from "./components/footer/terms";
-import UserComponent from "./components/dashboard/users/user.component";
-import WriterApplicationComponent from "./components/dashboard/writers/writer_application.component";
-
-type ProtectedRouteProps = {
-  allowedRoles: string[];
-  element?: ReactElement;
-};
-
-const ProtectedRoute = ({ allowedRoles, element }: ProtectedRouteProps) => {
-  const user = getUserInfo();
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/" replace />;
-  }
+import NotFoundComponent from "./components/not-found.component";
 
 // Lazy-loaded page components
 const TemplatesComponent = lazy(() => import("./components/templates/templates.component"));
@@ -110,11 +54,7 @@ const PublishedStoriesComponent = lazy(() => import("./components/dashboard/post
 const AnalyticsPage = lazy(() => import("./components/dashboard/analytics/analytics.page"));
 const PostListsComponent = lazy(() => import("./components/dashboard/posts/post_lists.component"));
 const EmailValidationComponent = lazy(() => import("./components/email_validation/email.validation.component"));
-const PaymentComponent = lazy(() =>
-  import("./components/home/pricing/payment.component").then((module) => ({
-    default: module.PaymentComponent,
-  }))
-);
+const PaymentComponent = lazy(() => import("./components/home/pricing/payment.component"));
 
 const ALL_ROLES = [USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN, USER_ROLE.WRITER, USER_ROLE.USER];
 const ELEVATED_ADMIN_ROLES = [USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN];
@@ -131,6 +71,7 @@ const router = createBrowserRouter([
       <>
         <ScrollToTopButton />
         <MagicCursorComponent />
+        <ThemeSwitcher />
         <ScrollToTop />
         <RootLayout>
           <Suspense fallback={<LoadingAnimation />}>
@@ -158,22 +99,25 @@ const router = createBrowserRouter([
       { path: "terms", element: <Terms /> },
       { path: "help-center", element: <HelpCenterComponent /> },
       { path: "guidelines", element: <GuidelinesComponent /> },
-      { path: "contributors", element: <SafeContributorsComponent /> },
+      
       { path: "contributors", element: <ContributorsComponent /> },
       { path: "community", element: <CommunityComponent /> },
       { path: "report-bug", element: <ReportBug /> },
-      {
-        element: <ProtectedRoute allowedRoles={ALL_ROLES} />,
-        children: [
-          { path: "explore", element: <ExploreComponent /> },
-          { path: "bookmarks", element: <BookmarksComponent /> },
-          { path: "resources", element: <ResourcesListComponent /> },
-          { path: "resources/:resourceName", element: <ResourceDetailComponent /> },
-          { path: "stories", element: <StoriesComponent /> },
-          { path: "branching-story", element: <BranchingStory /> },
-          { path: "story-workspace", element: <StoryWorkspace /> },
-        ],
-      },
+      // Public routes
+{ path: "explore", element: lazyPage(<ExploreComponent />) },
+{ path: "resources", element: <ResourcesListComponent /> },
+{ path: "resources/:resourceName", element: <ResourceDetailComponent /> },
+
+// Protected routes
+{
+  element: <ProtectedRoute allowedRoles={ALL_ROLES} />,
+  children: [
+    { path: "bookmarks", element: <BookmarksComponent /> },
+    { path: "stories", element: <StoriesComponent /> },
+    { path: "branching-story", element: <BranchingStory /> },
+    { path: "story-workspace", element: <StoryWorkspace /> },
+  ],
+},
       { path: "*", element: <NotFoundComponent /> },
     ],
   },
