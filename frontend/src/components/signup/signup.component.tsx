@@ -182,6 +182,7 @@ const otpPayload = {
       console.log("registerUser error:", e);
       return;
     }
+  };
   } catch (err: unknown) {
     const e = err as { data?: Array<{ message?: string }>; message?: string };
     const message = e?.data?.[0]?.message || e?.message || "OTP verification failed.";
@@ -326,24 +327,19 @@ const otpPayload = {
         </div>
 
 
-        {/* UPDATED: Structured layout classes to lock down maximum inner boundary constraints */}
-        <div className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-5 sm:p-8 shadow-2xl w-full min-w-0 overflow-hidden box-border">
-
-        <Link
-  to="/"
-  className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition-colors duration-200 hover:text-blue-400"
->
-  <span>←</span>
-  <span>Back to Home</span>
-</Link>
-          <h3 className="text-center text-xl sm:text-2xl font-bold tracking-tight text-slate-200">
         {/* Card */}
         <div className="bg-white dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 rounded-2xl p-5 sm:p-8 shadow-2xl w-full min-w-0 overflow-hidden box-border">
-
+          {/* Back to Home */}
+          <button
+            onClick={() => (window.location.href = "/")}
+            className="mb-4 text-sm text-blue-400 hover:text-blue-300 transition-colors duration-200 flex items-center gap-2 cursor-pointer"
+          >
+            ← Back to Home
+          </button>
           <h3 className="text-center text-xl sm:text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-200">
-
             {showOtpField ? "Verify Your Email" : "Create Account"}
           </h3>
+        
           {showOtpField && registerInfo && (
             <p className="mt-2 mb-4 text-center text-xs sm:text-sm text-slate-400 px-1">
               We sent a 6-digit code to{" "}
@@ -439,12 +435,14 @@ const otpPayload = {
                   </p>
                   <ul className="space-y-1.5 list-none p-0 m-0 w-full box-border text-[11px] font-medium">
                     {PASSWORD_REQUIREMENTS.map(({ key, label }) => {
-                      const met = passwordChecks[key];
-                      return (
-                          <span>{label}</span>
-                        </li>
-                      );
-                    })}
+  const met = passwordChecks[key];
+  return (
+    <li key={key} className={`flex items-center gap-1.5 ${met ? "text-green-500" : "text-slate-400"}`}>
+      <span>{met ? "✓" : "○"}</span>
+      <span>{label}</span>
+    </li>
+  );
+})}
                   </ul>
                 </div>
               )}
