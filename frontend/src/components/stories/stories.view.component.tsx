@@ -1,8 +1,8 @@
 import CharacterProfileCard from "./CharacterProfileCard";
 import StoryMoodDashboard from "./StoryMoodDashboard";
 import StoryTitleSuggestions from "./StoryTitleSuggestions";
+import StoryVersionHistory from "./StoryVersionHistory";
 import { CharacterProfile } from "./stories.utils";
-import { getShortenedText, ITopicData, topicsData } from "./stories.utils";
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { getShortenedText, ITopicData, topicsData, getWordCount, SELECTED_TOPIC_CLASSES } from "./stories.utils";
 import { formatReadingStats } from "../../utils/story-utils";
@@ -700,6 +700,27 @@ useEffect(() => {
   const handelStorySelection = (story: IStories) => {
     setSelectedStory(story);
   };
+
+  const handleRestoreVersion = (restoredContent: string) => {
+  if (!selectedStory) return;
+
+  const updatedStory = {
+    ...selectedStory,
+    content: restoredContent,
+  };
+
+  setSelectedStory(updatedStory);
+
+  setStories(
+    stories.map((story) =>
+      story.uuid === selectedStory.uuid
+        ? updatedStory
+        : story
+    )
+  );
+
+  toast.success("Story version restored successfully!");
+};
 
   const handleTopicClick = (index: number) => {
     setTopics((currentTopics) =>
@@ -1788,6 +1809,10 @@ const handleGenerateCharacterProfile = async () => {
                 onPlaybackStateChange={setNarrationState} 
               />
             </div>
+            <StoryVersionHistory
+              story={selectedStory}
+              onRestore={handleRestoreVersion}
+            />
           </div>
 
           {/* Alternate Endings Section */}
