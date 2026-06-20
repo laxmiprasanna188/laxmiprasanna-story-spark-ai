@@ -19,7 +19,7 @@ const app: Application = express();
 app.set("trust proxy", 1);
 app.use(helmet());
 
-const defaultCorsOrigins =
+const defaultCorsOrigins =  
   process.env.NODE_ENV === "development"
     ? ["http://localhost:4001", "http://localhost:4002"]
     : [
@@ -36,9 +36,6 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) {
-        if (process.env.NODE_ENV === "production") {
-          return callback(new Error("Origin header required"));
-        }
         return callback(null, true);
       }
 
